@@ -15,6 +15,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.H2Dialect}
 
   h2:
     console:
@@ -28,3 +29,32 @@ island-delta:
   nlp-service-url: ${NLP_SERVICE_URL:http://127.0.0.1:8000}
   admin-jwt-secret: ${ADMIN_JWT_SECRET:island-delta-admin-secret-key-2026}
   admin-jwt-expiration-hours: 24
+
+---
+# GaussDB / openGauss 生产配置 profile
+spring:
+  config:
+    activate:
+      on-profile: gaussdb
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/island_delta}
+    username: ${DB_USER:island_delta}
+    password: ${DB_PASS:island_delta}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  sql:
+    init:
+      mode: never
+
+  h2:
+    console:
+      enabled: false

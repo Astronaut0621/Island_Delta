@@ -46,14 +46,13 @@ mvn spring-boot:run
 
 ### 连接 GaussDB / openGauss
 
-启动时设置环境变量：
+使用 `gaussdb` profile 启动：
 
 ```bash
-set DB_URL=jdbc:postgresql://<host>:<port>/islanddelta
-set DB_USERNAME=<username>
-set DB_PASSWORD=<password>
-set DB_DRIVER=org.postgresql.Driver
-mvn spring-boot:run
+set DB_URL=jdbc:postgresql://<host>:<port>/island_delta
+set DB_USER=<username>
+set DB_PASS=<password>
+mvn spring-boot:run -Dspring-boot.run.profiles=gaussdb
 ```
 
 ### H2 控制台（本地开发）
@@ -86,10 +85,12 @@ gsql -d islanddelta -f database/schema.sql
 psql -d islanddelta -f database/schema.sql
 ```
 
-### 导入模拟数据
+### 导入种子数据
 
 ```bash
-gsql -d islanddelta -f database/seeds/seed.sql
+gsql -d islanddelta -f database/seeds/seed_emotion_labels.sql
+gsql -d islanddelta -f database/seeds/seed_locations.sql
+gsql -d islanddelta -f database/seeds/seed_mock_emotions.sql
 ```
 
 ### 自动建表（开发模式）
