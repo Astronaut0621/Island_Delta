@@ -1,0 +1,2 @@
+-- Island Delta database schema placeholder.
+-- Add GaussDB/openGauss DDL here when task three starts.
