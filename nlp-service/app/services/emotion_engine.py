@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import queue
+import threading
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -82,28 +84,78 @@ class PaddleEmotionClassifier:
         )
 
 
-_classifier: PaddleEmotionClassifier | None = None
-_load_attempted = False
-_load_error: str | None = None
+@dataclass(frozen=True)
+class _PredictionTask:
+    text: str
+    response: queue.Queue[tuple[EmotionPrediction | None, str | None]]
+
+
+class _PaddleEmotionWorker:
+    def __init__(self):
+        self._tasks: queue.Queue[_PredictionTask | None] = queue.Queue()
+        self._ready = threading.Event()
+        self._thread = threading.Thread(target=self._run, name="paddle-emotion-worker", daemon=True)
+        self.classifier: PaddleEmotionClassifier | None = None
+        self.load_error: str | None = None
+        self._thread.start()
+        self._ready.wait()
+
+    @property
+    def available(self) -> bool:
+        return self.classifier is not None
+
+    def predict(self, text: str) -> tuple[EmotionPrediction | None, str | None]:
+        if self.classifier is None:
+            return None, self.load_error
+
+        response: queue.Queue[tuple[EmotionPrediction | None, str | None]] = queue.Queue(maxsize=1)
+        self._tasks.put(_PredictionTask(text=text, response=response))
+        return response.get()
+
+    def _run(self) -> None:
+        try:
+            self.classifier = PaddleEmotionClassifier(PADDLE_EMOTION_MODEL_DIR)
+        except Exception as exc:  # pragma: no cover - optional dependency path.
+            self.load_error = f"{type(exc).__name__}: {exc}"
+            self._ready.set()
+            return
+
+        self._ready.set()
+        while True:
+            task = self._tasks.get()
+            if task is None:
+                return
+
+            try:
+                task.response.put((self.classifier.predict(task.text), None))
+            except Exception as exc:  # pragma: no cover - depends on optional runtime model stack.
+                error = f"{type(exc).__name__}: {exc}"
+                self.load_error = error
+                task.response.put((None, error))
+
+
+_worker: _PaddleEmotionWorker | None = None
+_worker_lock = threading.Lock()
+_last_load_error: str | None = None
 
 
 def predict_emotion(text: str) -> EmotionPrediction | None:
-    global _load_error
+    global _last_load_error
 
-    classifier = _load_classifier()
-    if classifier is None:
+    worker = _get_worker()
+    if worker is None:
         return None
 
-    try:
-        return classifier.predict(text)
-    except Exception as exc:  # pragma: no cover - depends on optional runtime model stack.
-        _load_error = f"{type(exc).__name__}: {exc}"
+    prediction, error = worker.predict(text)
+    if error is not None:
+        _last_load_error = error
         return None
+    return prediction
 
 
 def get_emotion_engine_status() -> EmotionEngineStatus:
-    classifier = _load_classifier()
-    if classifier is not None:
+    worker = _get_worker()
+    if worker is not None and worker.available:
         return EmotionEngineStatus(
             model_name="Island Delta ERNIE emotion classifier",
             model_version=PADDLE_MODEL_VERSION,
@@ -119,24 +171,24 @@ def get_emotion_engine_status() -> EmotionEngineStatus:
         engine="keyword-rules",
         paddle_available=False,
         model_path=str(PADDLE_EMOTION_MODEL_DIR),
-        fallback_reason=_load_error,
+        fallback_reason=(worker.load_error if worker is not None else None) or _last_load_error,
     )
 
 
-def _load_classifier() -> PaddleEmotionClassifier | None:
-    global _classifier, _load_attempted, _load_error
+def _get_worker() -> _PaddleEmotionWorker | None:
+    global _last_load_error, _worker
 
-    if _load_attempted:
-        return _classifier
+    if _worker is not None:
+        return _worker
 
-    _load_attempted = True
-    try:
-        _classifier = PaddleEmotionClassifier(PADDLE_EMOTION_MODEL_DIR)
-    except Exception as exc:  # pragma: no cover - optional dependency path.
-        _load_error = f"{type(exc).__name__}: {exc}"
-        _classifier = None
+    with _worker_lock:
+        if _worker is not None:
+            return _worker
 
-    return _classifier
+        _worker = _PaddleEmotionWorker()
+        if _worker.load_error is not None:
+            _last_load_error = _worker.load_error
+        return _worker
 
 
 def _read_label_map(model_dir: Path) -> dict[int, str]:

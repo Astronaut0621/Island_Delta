@@ -28,7 +28,7 @@ router = APIRouter()
 
 
 @router.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
+async def health() -> HealthResponse:
     engine_status = get_emotion_engine_status()
     return HealthResponse(
         status="ok",
@@ -39,12 +39,12 @@ def health() -> HealthResponse:
 
 
 @router.post("/nlp/analyze", response_model=AnalyzeResponse)
-def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
+async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     return analyze_text(request.text, location_name=request.location_name)
 
 
 @router.post("/nlp/generate-post", response_model=GeneratePostResponse)
-def generate_post(request: GeneratePostRequest) -> GeneratePostResponse:
+async def generate_post(request: GeneratePostRequest) -> GeneratePostResponse:
     analysis = analyze_text(request.text, location_name=request.location_name)
     emotion_name = EMOTION_LABELS.get(request.emotion_type or analysis.emotion_type, analysis.emotion_name)
     temperature = request.temperature if request.temperature is not None else analysis.temperature
@@ -64,7 +64,7 @@ def generate_post(request: GeneratePostRequest) -> GeneratePostResponse:
 
 
 @router.post("/chat/message", response_model=ChatMessageResponse)
-def chat_message(request: ChatMessageRequest) -> ChatMessageResponse:
+async def chat_message(request: ChatMessageRequest) -> ChatMessageResponse:
     return build_chat_response(
         message=request.message,
         session_id=request.session_id,
@@ -73,7 +73,7 @@ def chat_message(request: ChatMessageRequest) -> ChatMessageResponse:
 
 
 @router.get("/nlp/model-version", response_model=ModelVersionResponse)
-def model_version() -> ModelVersionResponse:
+async def model_version() -> ModelVersionResponse:
     engine_status = get_emotion_engine_status()
     return ModelVersionResponse(
         model_name=engine_status.model_name,
@@ -105,7 +105,7 @@ def model_version() -> ModelVersionResponse:
 
 
 @router.post("/nlp/feedback", response_model=FeedbackResponse)
-def feedback(request: FeedbackRequest) -> FeedbackResponse:
+async def feedback(request: FeedbackRequest) -> FeedbackResponse:
     engine_status = get_emotion_engine_status()
     return FeedbackResponse(
         accepted=request.accepted,

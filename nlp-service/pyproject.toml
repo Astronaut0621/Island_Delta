@@ -19,11 +19,13 @@ dependencies = [
 [project.optional-dependencies]
 paddle = [
   "paddlepaddle>=3.0.0",
-  "paddlenlp>=3.0.0b4"
+  "paddlenlp>=3.0.0b4",
+  "aistudio-sdk==0.2.6"
 ]
 paddle-gpu = [
   "paddlepaddle-gpu>=3.0.0",
-  "paddlenlp>=3.0.0b4"
+  "paddlenlp>=3.0.0b4",
+  "aistudio-sdk==0.2.6"
 ]
 
 [tool.uvicorn]
