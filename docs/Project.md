@@ -1545,7 +1545,7 @@ tired    疲惫
 sad      失落
 calm     平静
 healed   治愈
-safe     安心
+secure   安心
 happy    快乐
 hopeful  希望
 ```
@@ -2086,7 +2086,7 @@ tired    疲惫
 sad      失落
 calm     平静
 healed   治愈
-safe     安心
+secure   安心
 happy    快乐
 hopeful  希望
 ```

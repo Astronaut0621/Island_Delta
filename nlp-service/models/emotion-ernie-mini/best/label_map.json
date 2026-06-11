@@ -1,0 +1,26 @@
+{
+  "label_to_id": {
+    "lonely": 0,
+    "anxious": 1,
+    "stressed": 2,
+    "tired": 3,
+    "sad": 4,
+    "calm": 5,
+    "healed": 6,
+    "secure": 7,
+    "happy": 8,
+    "hopeful": 9
+  },
+  "id_to_label": {
+    "0": "lonely",
+    "1": "anxious",
+    "2": "stressed",
+    "3": "tired",
+    "4": "sad",
+    "5": "calm",
+    "6": "healed",
+    "7": "secure",
+    "8": "happy",
+    "9": "hopeful"
+  }
+}

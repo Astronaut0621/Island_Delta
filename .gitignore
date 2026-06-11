@@ -1,17 +1,29 @@
 .idea/
 .vscode/
 .DS_Store
+Thumbs.db
 
 node_modules/
 dist/
 coverage/
+.vite/
 
 target/
 *.class
+*.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
 
 .venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
 
 .env
 .env.*
@@ -19,3 +31,12 @@ __pycache__/
 
 logs/
 *.log
+
+README_local.md
+
+nlp-service/autodl_emotion_training/
+nlp-service/autodl_emotion_training.zip
+
+backend/data/
+*.mv.db
+*.trace.db

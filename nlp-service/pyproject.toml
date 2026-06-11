@@ -16,5 +16,15 @@ dependencies = [
   "pydantic>=2.9.0"
 ]
 
+[project.optional-dependencies]
+paddle = [
+  "paddlepaddle>=3.0.0",
+  "paddlenlp>=3.0.0b4"
+]
+paddle-gpu = [
+  "paddlepaddle-gpu>=3.0.0",
+  "paddlenlp>=3.0.0b4"
+]
+
 [tool.uvicorn]
 factory = false
