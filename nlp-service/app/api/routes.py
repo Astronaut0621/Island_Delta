@@ -21,6 +21,7 @@ from app.schemas.nlp import (
 from app.services.analyzer import analyze_text
 from app.services.chat import build_chat_response
 from app.services.emotion_engine import get_emotion_engine_status
+from app.services.feedback_store import store_feedback
 from app.services.generator import generate_public_post
 from app.services.safety import detect_safety
 
@@ -107,8 +108,9 @@ async def model_version() -> ModelVersionResponse:
 @router.post("/nlp/feedback", response_model=FeedbackResponse)
 async def feedback(request: FeedbackRequest) -> FeedbackResponse:
     engine_status = get_emotion_engine_status()
+    stored = store_feedback(request, model_version=engine_status.model_version)
     return FeedbackResponse(
         accepted=request.accepted,
-        stored=False,
+        stored=stored,
         model_version=engine_status.model_version,
     )

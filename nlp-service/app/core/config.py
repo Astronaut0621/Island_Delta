@@ -13,6 +13,12 @@ PADDLE_EMOTION_MODEL_DIR = Path(
     )
 )
 PADDLE_INFERENCE_DEVICE = os.getenv("NLP_PADDLE_DEVICE", "auto")
+FEEDBACK_LOG_PATH = Path(
+    os.getenv(
+        "NLP_FEEDBACK_LOG_PATH",
+        SERVICE_ROOT / "runtime" / "nlp_feedback.jsonl",
+    )
+)
 
 MODEL_VERSION = RULE_MODEL_VERSION
 
