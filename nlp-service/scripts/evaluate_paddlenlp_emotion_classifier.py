@@ -9,7 +9,7 @@ from train_paddlenlp_emotion_classifier import LABELS, build_loader, evaluate, r
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=Path, default=Path("data/campus_emotion_samples_v2.csv"))
+    parser.add_argument("--dataset", type=Path, default=Path("data/campus_emotion_samples_v3.csv"))
     parser.add_argument("--model-dir", type=Path, default=Path("models/emotion-ernie-mini/best"))
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--max-seq-len", type=int, default=96)

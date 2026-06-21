@@ -159,7 +159,7 @@ def save_label_files(output_dir: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", type=Path, default=Path("data/campus_emotion_samples_v2.csv"))
+    parser.add_argument("--dataset", type=Path, default=Path("data/campus_emotion_samples_v3.csv"))
     parser.add_argument("--model-name", default="ernie-3.0-mini-zh")
     parser.add_argument("--output-dir", type=Path, default=Path("models/emotion-ernie-mini"))
     parser.add_argument("--epochs", type=int, default=8)

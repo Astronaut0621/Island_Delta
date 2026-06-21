@@ -37,6 +37,7 @@ README_local.md
 nlp-service/runtime/
 nlp-service/autodl_emotion_training/
 nlp-service/autodl_emotion_training.zip
+nlp-service/data
 
 backend/data/
 *.mv.db

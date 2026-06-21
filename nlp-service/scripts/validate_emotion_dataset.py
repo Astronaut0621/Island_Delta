@@ -17,7 +17,7 @@ EXPECTED_LABELS = [
     "hopeful",
 ]
 
-EXPECTED_SOURCES = {"manual", "ai_generated", "social_excerpt"}
+EXPECTED_SOURCES = {"manual", "ai_generated"}
 REQUIRED_FIELDS = ["id", "text", "emotion_type", "source"]
 
 

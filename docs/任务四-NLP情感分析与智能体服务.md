@@ -106,7 +106,7 @@ nlp-service/data/campus_emotion_samples_v2.csv
 1. `id`：人工维护的稳定编号。
 2. `text`：一句可投递到情绪地图的中文短句。
 3. `emotion_type`：十类主情绪之一。
-4. `source`：样本来源，建议固定为 `manual`、`ai_generated`、`social_excerpt`。
+4. `source`：样本来源，固定为 `manual`、`ai_generated`。人工编写和论坛/社交平台人工采集整理都标为 `manual`，AI 批量生成样本标为 `ai_generated`。
 
 初版整理时可以按标签分段编号，方便检查每类数量：
 
