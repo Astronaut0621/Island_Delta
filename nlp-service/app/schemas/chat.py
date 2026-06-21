@@ -15,4 +15,7 @@ class ChatMessageResponse(BaseModel):
     analysis: AnalyzeResponse
     draft_post: str
     actions: list[str]
+    # 附近更温暖的地点推荐。负向且非危机情绪时才需要，依赖 backend 地点数据，
+    # 当前服务不持有，暂返回空列表占位，对接后填充。
+    nearby_warmer_locations: list[str] = Field(default_factory=list)
     model_version: str
